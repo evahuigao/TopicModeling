@@ -1,0 +1,72 @@
+# libraries need to be imported 
+
+import numpy as np
+import pandas as pd
+pd.set_option('display.max_columns', 50)
+
+import nltk # natural language toolkit
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
+from nltk.corpus import stopwords
+stop_words = stopwords.words('english')
+from nltk.stem.snowball import SnowballStemmer
+from nltk.stem import WordNetLemmatizer  
+le=WordNetLemmatizer()
+
+import re
+
+from tqdm import tqdm
+tqdm.pandas(desc="my bar!")
+
+import sys
+!conda install --yes --prefix {sys.prefix} textblob
+from textblob import TextBlob
+
+import scipy.stats as stats
+from collections import Counter
+from sklearn.manifold import TSNE
+
+!{sys.executable} -m pip install wordcloud
+from wordcloud import WordCloud
+
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+warnings.filterwarnings("ignore")
+
+from bokeh.plotting import figure, output_file, show
+from bokeh.models import Label
+from bokeh.io import output_notebook
+output_notebook()
+
+%matplotlib inline
+
+import networkx as nx
+
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.decomposition import LatentDirichletAllocation as LDA
+from sklearn.model_selection import GridSearchCV
+from sklearn.decomposition import NMF, LatentDirichletAllocation, TruncatedSVD
+from sklearn.metrics.pairwise import euclidean_distances
+
+import sys
+!{sys.executable} -m pip install gensim
+import gensim
+from gensim import models, corpora
+from gensim.models import LsiModel
+from gensim import similarities
+from gensim.models.coherencemodel import CoherenceModel
+from gensim.corpora.dictionary import Dictionary
+from gensim.models.nmf import Nmf
+
+from collections import Counter
+from operator import itemgetter
+
+!{sys.executable} -m pip install pyLDAvis
+import pyLDAvis
+import pyLDAvis.sklearn
+pyLDAvis.enable_notebook()
+
+import matplotlib.pyplot as plt
+import seaborn as sns
