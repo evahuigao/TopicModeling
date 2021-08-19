@@ -1,6 +1,6 @@
 # Topic_Modeling
 **Objective**
-- Shorten the time to extract a certain topic or a collection of topics that the documents belong
+- Shorten the time for extracting a certain topic or a collection of topics that the documents belong
 - With the help of NLP and ML, categorize the documents under certain topics
 
 
