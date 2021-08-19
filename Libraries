@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 pd.set_option('display.max_columns', 50)
 
-import nltk # natural language toolkit
+-->import nltk # natural language toolkit
 nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
@@ -52,7 +52,7 @@ from sklearn.metrics.pairwise import euclidean_distances
 
 import sys
 !{sys.executable} -m pip install gensim
-import gensim
+----> import gensim
 from gensim import models, corpora
 from gensim.models import LsiModel
 from gensim import similarities
