@@ -251,27 +251,12 @@ contractions = {
 }
 
 
-# In[58]:
+
 
 
 dataset = [train_documents, test_documents]
 
 
-# * **Text Cleaning**
-# * **
-# * Steps :
-#     * **
-#     Replacing the short forms with the complete form such as I've to I have which might give some significane
-#     * **
-#     Removing all the characters except words as we are only concerned with the words
-#     * **
-#     **Tokenizing** each word using nltk library which is converting a text into a list of tokens or words such as "This is topic modeling case study" to ['This', 'is', 'topic', 'modeling', 'case', 'study']
-#     * **
-#     **Lemmatizing** the above word token which is converting a word to a root word such as "making" to "make" so that multiple words can be converted into a single word as each word can be represented into many Part of Speech tags such as noun, adjective, verb etc.. and storing it in a list if and only if word is not a stop word which arer ['is','the','for'] and mony more and also if the length of each token is greater than 3 alphabets because there might be some words which do not come in stop words but might not give any significant meaning and will only dimensions as each word extra will have extra dimensions to compute for.
-#     * **
-#     The finally joining the individual tokens from a list to make a sentence
-
-# In[59]:
 
 
 def clean_documents(text):
@@ -292,34 +277,31 @@ def clean_documents(text):
     return cleaned_text
 
 
-# In[60]:
+
 
 
 train_documents['clean_document'] = train_documents['document'].progress_apply(lambda x: clean_documents(x))
 
 
-# In[61]:
 
 
 train_documents.head()
 
 
-# In[62]:
+
 
 
 test_documents['clean_document'] = test_documents['document'].progress_apply(lambda x: clean_documents(x))
 
 
-# In[64]:
+
 
 
 train_docs = train_documents['clean_document'].copy()
 test_docs  = test_documents['clean_document'].copy()
 
 
-# * Looking at the documents - * **EDA**
 
-# In[65]:
 
 
 # Define helper functions
@@ -343,7 +325,7 @@ def get_top_n_words(n_top_words, count_vectorizer, text_data):
     return (words, word_values[0,:n_top_words].tolist()[0])
 
 
-# In[66]:
+
 
 
 # Define helper functions
@@ -366,7 +348,6 @@ def keys_to_counts(keys):
     return (categories, counts)
 
 
-# In[67]:
 
 
 count_vectorizer = CountVectorizer(stop_words='english')
@@ -383,8 +364,6 @@ ax.set_xlabel('Word');
 ax.set_ylabel('Number of occurences');
 plt.show()
 
-
-# In[68]:
 
 
 def stats_of_documents(data_df):
@@ -428,61 +407,6 @@ nltk.download('averaged_perceptron_tagger')
 stats_of_documents(train_documents)
 
 
-# ## Topic Modeling
-
-# * **LSA**
-
-# * Latent Semantic Analysis, or LSA, is one of the foundational techniques in topic modeling. The core idea is to take a matrix of what we have — documents and terms — and decompose it into a separate document-topic matrix and a topic-term matrix.
-
-# * The first step is generating our document-term matrix. Given m documents and n words in our vocabulary, we can construct an m × n matrix A in which each row represents a document and each column represents a word. In the simplest version of LSA, each entry can simply be a raw count of the number of times the j-th word appeared in the i-th document. 
-# * In practice, however, raw counts do not work particularly well because they do not account for the significance of each word in the document. For example, the word “nuclear” probably informs us more about the topic(s) of a given document than the word “test.”
-# * **
-# * Consequently, LSA models typically replace raw counts in the document-term matrix with a tf-idf score. Tf-idf, or term frequency-inverse document frequency, assigns a weight for term j in document i as follows:
-# * **
-# * **w(i,j) = tf(i,j) * log(N/df(j))**
-# * where,
-# * w(i,j)       = tf-idf score
-# * tf(i,j)      = occurences of term in documents
-# * In log(N/df(j)), N = total documents and df(j) = documents containing words
-
-# * Dimensionality reduction can be performed using truncated SVD. * **SVD, or singular value decomposition**, is a technique in linear algebra. factorizes into 3 separate matrics : * **M = U*S*V**, where S is a diagonal matrix of the singular values of M.
-# * truncated SVD reduces dimensionality by selecting only the t largest singular values, and only keeping the first t columns of U and V. In this case, t is a hyperparameter we can select and adjust to reflect the number of topics we want to find.
-
-# * **U = (m ⨉ t)** emerges as our document-topic matrix, 
-# * **V = (n ⨉ t)** becomes our term-topic matrix. 
-# * In both U and V, the columns correspond to one of our t topics. In U, rows represent document vectors expressed in terms of topics; in V, rows represent term vectors expressed in terms of topics.
-
-# * With these document vectors and term vectors, we can now easily apply measures such as cosine similarity to evaluate:
-# * **
-#     the similarity of different documents
-#     the similarity of different words
-#     the similarity of terms (or “queries”) and documents (which becomes useful in information retrieval, when we want to retrieve passages most relevant to our search query).
-
-# * Some important points:-
-# * **
-#     LSA is generally implemented with Tfidf values everywhere and not with the Count Vectorizer.
-# 
-#     Default values for min_df & max_df worked well.
-#     
-#     LSI topics are not supposed to make sense; since LSI allows negative numbers, it boils down to delicate cancellations between topics and there’s no straightforward way to interpret a topic.
-
-# * Fitting using **TfIdf**, 4000 features are taken as the threshold so words having sufficient count will only be taken. As our vocabulary is not diverse, most words are from noun and more or less they are talking about people, childre, school ete etc...
-
-# In[75]:
-
-
-vect        = TfidfVectorizer(stop_words=stop_words,max_features=4000)
-vect_text   = vect.fit_transform(train_documents['clean_document'])
-
-
-# In[76]:
-
-
-# We will be going with the 10 topics as I tried with 15,20 topics but there was no improvement.
-# n_iter is for 10 iterations with random_state as 42 to keep the results fixed
-
-
-# In[77]:
 
 
 lsa_model = TruncatedSVD(n_components=10, algorithm='randomized', n_iter=10, random_state=42)
@@ -490,7 +414,7 @@ lsa_model = TruncatedSVD(n_components=10, algorithm='randomized', n_iter=10, ran
 lsa_top   = lsa_model.fit_transform(vect_text)
 
 
-# In[117]:
+
 
 
 l=lsa_top[1]
@@ -499,8 +423,7 @@ for i,topic in enumerate(l):
     print(i,topic)
 
 
-# In[118]:
-
+#
 
 def topics_document(model_output, n_topics , data):
     '''
@@ -521,34 +444,23 @@ def topics_document(model_output, n_topics , data):
     return df_document_topic
 
 
-# In[119]:
 
 
 documet_topic_lsa = topics_document(lsa_top, n_topics=10, data=train_documents)
 documet_topic_lsa
 
 
-# In[78]:
-
 
 lsa_keys = get_keys(lsa_top)
 lsa_categories, lsa_counts = keys_to_counts(lsa_keys)
 
 
-# In[121]:
 
 
 topics_df = pd.DataFrame({'topic' : lsa_categories, 'count' : lsa_counts})
 sns.barplot(x=topics_df['topic'], y = topics_df['count'])
 plt.show()
 
-
-# * This plot is showing how the topics are not able to differentiate the words between them and the maximum documents almost more than 90% of the documents are assigned topic 0.
-# * Very few are documents are assigned other topics
-# * **
-# * Below we will see what are the **top 10 words** for each documents
-
-# In[122]:
 
 
 vocab = vect.get_feature_names()
@@ -562,7 +474,6 @@ for i, comp in enumerate(lsa_model.components_):
     print("\n")
 
 
-# In[23]:
 
 
 # Define helper functions
@@ -583,7 +494,7 @@ def get_mean_topic_vectors(keys, two_dim_vectors, n_topics):
     return mean_topic_vectors
 
 
-# In[24]:
+
 
 
 colormap = np.array([
@@ -594,15 +505,7 @@ colormap = np.array([
 colormap = colormap[:10]
 
 
-# * Visualizing topics with * **t-SNE**
 
-# * * **t-Distributed Stochastic Neighbor Embedding (t-SNE)** is an unsupervised, non-linear technique primarily used for data exploration and visualizing high-dimensional data. In simpler terms, t-SNE gives you a feel or intuition of how the data is arranged in a high-dimensional space.
-# * **
-# * The t-SNE algorithm calculates a similarity measure between pairs of instances in the high dimensional space and in the low dimensional space.
-
-# * KL is a statistical measure which is used to quantify how one distribution is different from another. Closer the value of **Kullback–Leibler(KL)** divergence to zero, the closeness of the corresponding words increases. In other words, the divergence value is less.
-
-# In[79]:
 
 
 tsne_lsa_model = TSNE(n_components=2, perplexity=50, learning_rate=100, 
@@ -610,7 +513,7 @@ tsne_lsa_model = TSNE(n_components=2, perplexity=50, learning_rate=100,
 tsne_lsa_vectors = tsne_lsa_model.fit_transform(lsa_top)
 
 
-# In[80]:
+
 
 
 lsa_mean_topic_vectors = get_mean_topic_vectors(lsa_keys, tsne_lsa_vectors, n_topics=10)
@@ -626,17 +529,6 @@ for t in range(10):
 show(plot)
 
 
-# * Evidently, this is a bit a of a failed result. We have failed to reach any great degree of separation across the topic categories, and it is difficult to tell whether this can be attributed to the LSA decomposition or instead the  t -SNE dimensionality reduction process. Let's move forward and try another clustering technique.
-
-# * In Almost all the documents, the dominant topic comes out to be 0 which is having the top 10 keywords as :
-#     * **people, said, child, year, time, school, would, life, like, student**
-# * This is evident from the dataframe shown above and the tsne plot as well.
-
-# * Generating a  **Word Cloud** from the most occuring words in the topics. 
-# * **
-# * The more bigger the word is, the more frequency/weightage having for the word is and the smaller word gets, the lesser frequency/weightage for that word is
-
-# In[125]:
 
 
 # Generate a word cloud image for given topic
@@ -702,50 +594,13 @@ sns.barplot(x=topics_df_test['topic'], y = topics_df_test['count'])
 plt.show()
 
 
-# In[132]:
+
 
 
 documet_topic_lsa_test = topics_document(lsa_top_test, n_topics=10, data=test_documents)
 documet_topic_lsa_test
 
 
-# In[214]:
-
-
-# Same thing happened with the test
-
-
-# * **LDA**
-
-# * Providing the link for the full in depth detail explaination about the math and the implemenation for LDA.
-# * The reason I am providing with the link is it is difficult to explain in words and also one should be very thorough with LDA as it is the most popular apporch and trustworthy for topic modeling.
-# * **
-# * **Link** : https://towardsdatascience.com/latent-dirichlet-allocation-intuition-math-implementation-and-visualisation-63ccb616e094
-
-# * It is one of the most popular and interpretable generative models for finding topics in text data. 
-# * **
-# * There is a collection of different articles (corpus of documents), and we suspect that there are several topics that come up frequently within said corpus.
-# * The distributional hypothesis: 
-# * **
-#     Words that appear together frequently are likely to be close in meaning
-#     each topic is a mixture of different words
-#     each document is a mixture of different topics
-
-# * **LDA is a generative model** — it tries to determine the underlying mechanism that generates the articles and the topics.
-
-# * The full probability formula that generates a document is if we break down, we have three product sums:
-#     * **
-# * **Dirichlet distribution of topics over terms**: for each topic i amongst K topics, what is the probability distribution of words for i.
-#     * **
-# * **Dirichlet distribution of documents over topics**: for each document j in our corpus of size M, what is the probability distribution of topics for j.
-#     * **
-# * **Probability of a topic appearing given a document X the probability of a word appearing given a topic**: how likely is it that certain topics, Z, appear in this document and then how likely is that certain words, W, appear given those topics.
-
-# * The LDA topic model algorithm requires a document word matrix as the main input.
-# * **
-# * It has been created using CountVectorizer.We will consider words that has occurred at least 10 times (min_df), remove built-in english stopwords, convert all words to lowercase, and a word can contain numbers and alphabets of at least length 3 in order to be qualified as a word.
-
-# In[81]:
 
 
 vectorizer = CountVectorizer(analyzer='word',       
@@ -758,7 +613,7 @@ data_vectorized = vectorizer.fit_transform(train_documents['clean_document'])
 
 # * Training the model
 
-# In[221]:
+
 
 
 # Build LDA Model
@@ -774,12 +629,6 @@ lda_output = lda_model.fit_transform(data_vectorized)
 print(lda_model)  # Model attributes
 
 
-# * **Perplexity** is a measurement of how well a probability distribution or probability model predicts a sample. It may be used to compare probability models. A low perplexity indicates the probability distribution is good at predicting the sample.
-# * Focussing on the **log-likelihood** part, you can think of the perplexity metric as measuring how probable some new unseen data is given the model that was learned earlier
-
-# * A model with higher log-likelihood and lower perplexity (exp(-1. * log-likelihood per word)) is considered to be good.
-
-# In[233]:
 
 
 # Log Likelyhood: Higher the better
@@ -790,18 +639,7 @@ print("Perplexity: ", lda_model.perplexity(data_vectorized))
 print(lda_model.get_params())
 
 
-# * On a different note, perplexity might not be the best measure to evaluate topic models because it doesn’t consider the context and semantic associations between words.
 
-# * The most important tuning parameter for LDA models is n_components (number of topics).
-# 
-# * In addition, I am going to search learning_decay (which controls the learning rate) as well.
-# 
-# * Besides these, other possible search params could be learning_offset (downweigh early iterations. Should be > 1) and max_iter. These could be worth experimenting if you have enough computing resources. Be warned, the grid search constructs multiple LDA models for all possible combinations of param values in the param_grid dict. So, this process can consume a lot of time and resources.
-
-# * n_componenets is the no of topics to be learned
-# * learning_decay is in percentage and states that what % of previous topic to be ignored to learn a new topic
-
-# In[236]:
 
 
 # Define Search Param
@@ -927,21 +765,6 @@ display_data = pyLDAvis.sklearn.prepare(best_lda_model, #our pre-trained LDA mod
 pyLDAvis.display(display_data)  
 
 
-# * Each bubble represents a topic. The larger the bubble, the higher percentage of the number of articles in the corpus is about that topic.
-# *  **
-# * Blue bars represent the overall frequency of each word in the corpus. If no topic is selected, the blue bars of the most frequently used words will be displayed.
-# * **
-# * Red bars give the estimated number of times a given term was generated by a given topic. As you can see from the image below, there are about nearly 20000 of the word **people**, and this term is used about 5,000 times within topic 8. The word with the longest red bar is the word that is used the most by the articles belonging to that topic.
-
-# * Now,looking at the right hand side of the plot there is a measure called relevance, which is similar to **exclusivity** : it denotes the degree to which a term appears in a particular topic to the exclusion of others. Relevance is based on another metric, **lift** : which is the ratio of a term’s probability within a topic to its margin probability across the corpus. 
-# * On one hand, it decreases the ranking of globally common terms, but on the other, it gives a high ranking to rare terms that occur in a single topic. 
-
-# * Relevance is denoted by **λ**, the weight assigned to the probability of a term in a topic relative to its lift. When λ = 1, the terms are ranked by their probabilities within the topic (the "regular" method) while when λ = 0, the terms are ranked only by their lift. The interface allows to adjust the value of λ between 0 and 1.
-# 
-# * The researchers conducted a study to determine whether there was an optimal value for λ regarding the use of relevance to aid topic interpretation and found that value to be 0.6
-
-# In[89]:
-
 
 def clean_documents_tokens(text):
     
@@ -1001,30 +824,7 @@ lda_model_ = gensim.models.LdaMulticore(corpus=corpus,
                                        per_word_topics=True)
 
 
-# * Optimizing for perplexity may not yield human interpretable topics.
-# * This limitation of perplexity measure served as a motivation for more work trying to model the human judgment, and thus **Topic Coherence.**
 
-# * The concept of topic coherence combines a number of measures into a framework to evaluate the coherence between topics inferred by a model.
-# * **
-# * Topic Coherence measures score a single topic by measuring the degree of semantic similarity between high scoring words in the topic. These measurements help distinguish between topics that are semantically interpretable topics and topics that are artifacts of statistical inference.
-# * **
-# * A set of statements or facts is said to be **coherent**, if they support each other. Thus, a coherent fact set can be interpreted in a context that covers all or most of the facts. An example of a coherent fact set is “the game is a team sport”, “the game is played with a ball”, “the game demands great physical efforts”
-# * **
-# * There are few coherent measures but we'll be looking at the one which we used and is the most popular.
-# * **C_v** measure is based on a sliding window, one-set segmentation of the top words and an indirect confirmation measure that uses normalized pointwise mutual information (NPMI) and the cosine similarity.
-# * **
-#     Pointwise mutual information can be normalized between [-1,+1] resulting in -1 (in the limit) for never occurring together, 0 for independence, and +1 for complete co-occurrence.
-#     * **npmi≡pmi−logp(x,y)=log[p(x)p(y)]logp(x,y)−1**
-#     The when there are:
-# 
-#         no co-occurrences, logp(x,y)→−∞, so nmpi is -1,
-#         co-occurrences at random, logp(x,y)=log[p(x)p(y)], so nmpi is 0,
-#         complete co-occurrences, logp(x,y)=logp(x)=logp(y), so nmpi is 1.
-# * **
-#     * **Cosine Similarity** is used as a measureof similarity.
-#     Dot product between the vectors/square root of the sum of squared eucledian distiances between the vectors
-
-# In[384]:
 
 
 # Compute Coherence Score
@@ -1049,15 +849,6 @@ documet_topic_lda_test = topics_document(lda_top_test, n_topics=10, data=test_do
 documet_topic_lda_test
 
 
-# * **NMF**
-
-# * * **Non-Negative Matrix Factorization (NMF)** works in way that, it decomposes (or factorizes) high-dimensional vectors into a lower-dimensional representation. These lower-dimensional vectors are non-negative which also means their coefficients are non-negative.
-# * **
-# * Using the original matrix (A), NMF will give you two matrices (W and H). W is the topics it found and H is the coefficients (weights) for those topics. In other words, A is articles by words (original), H is articles by topics and W is topics by words.
-# * **
-# * NMF will modify the initial values of W and H so that the product approaches A until either the approximation error converges or the max iterations are reached. We will proceed with the tfidf values
-
-# In[91]:
 
 
 tfidf_vectorizer = TfidfVectorizer(
@@ -1261,7 +1052,7 @@ for t in range(num_topics):
 plt.tight_layout()
 
 
-# In[319]:
+
 
 
 terms, sizes = getTermsAndSizes(topics_display_list[1])
@@ -1285,14 +1076,12 @@ for t in range(num_topics):
 plt.tight_layout()
 
 
-# In[408]:
 
 
 documet_topic_nmf = topics_document(nmf_output, n_topics=13, data=train_documents)
 documet_topic_nmf
 
 
-# In[324]:
 
 
 nmf_keys = get_keys(nmf_output)
@@ -1303,7 +1092,7 @@ sns.barplot(x=topics_df_nmf['topic'], y = topics_df_nmf['count'])
 plt.show()
 
 
-# In[394]:
+
 
 
 vocab = tfidf_vectorizer.get_feature_names()
@@ -1317,7 +1106,7 @@ for i, comp in enumerate(nmf.components_):
     print("\n")
 
 
-# In[93]:
+
 
 
 panel = pyLDAvis.sklearn.prepare(nmf, tfidf, tfidf_vectorizer, mds='tsne')
@@ -1326,32 +1115,24 @@ pyLDAvis.display(panel)
 
 # * **Predictions on the unseen dataset**
 
-# In[392]:
 
 
 test_documents['clean_tokens'] = test_documents['document'].progress_apply(lambda x: clean_documents_tokens(x))
 
 
-# In[409]:
+
 
 
 data_vectorized_test      =tfidf_vectorizer.transform(test_documents['clean_tokens'])
 nmf_top_test              =nmf.transform(data_vectorized_test)
 
 
-# In[410]:
+
 
 
 documet_topic_nmf_test = topics_document(nmf_top_test, n_topics=13, data=test_documents)
 documet_topic_nmf_test
 
-
-# * We wil be proceeding with **NMF** though Coherence of LDA is a bit more but using pyLDAvis plot and topic distirbution for the words, the topics are much distributed clearly giving significant differences in the top words
-# * **
-# * Though it is proven that LDA is quite stable and is the state of the art model.
-# * Hence, we will be going final with the LDA as well as NMF
-
-# In[ ]:
 
 
 
