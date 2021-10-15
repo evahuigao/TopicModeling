@@ -8,7 +8,7 @@
 1. Pandas for data manipulation, aggregation 
 2. Matplotlib & bohkeh for visualization and interaction 
 3. Numpy for efficient computaions 
-4. Scikit Learna and Gensim for topic modeling
+4. Scikit Learn and Gensim for topic modeling
 5. nltk for text cleaning and preprocessing
 6. TSNE and pyLDAvis for visualizing the topics
 
